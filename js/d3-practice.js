@@ -225,3 +225,46 @@ function makeBarDiffData() {
 
     svg.dispatch("click");
 }
+
+function makeScatter(){
+    var dataset = d3.csv("/data/apartmentPrices.csv", function(d){
+                    return{
+                        area: +d.GrLivArea,
+                        price: +d.SalePrice
+                    }               
+        });  
+    var xValue = function(d) { return d.area;} ;
+    var yValue = function(d) { return d.price;} ;
+    // .row(function(d){
+    //                     return {area= +d.GrLivArea,
+    //                             price= +d.SalePrice
+    //                     };
+    //                 })
+    //                 .get(function(d){
+    //                     console.log(d);
+    //             });
+
+    // console.log(data1);
+    // var data1  = [[100,50], [200,100], [ 300,150], [400,200], [500,250], [600,300], [700,350], [800,400]];
+
+    var svg = d3.select("#practice5");
+    var pxX = svg.attr("width");
+    var pxY = svg.attr("height");
+    var padding = 40;
+    var paddingMinor = 20;
+
+    var scX = d3.scaleLinear()
+                .domain([0,4000])
+                .range([paddingMinor, pxX-padding]);
+    var scY = d3.scaleLinear()
+                .domain([0,500000])
+                .range([pxY-padding,paddingMinor]);
+
+    var plot = svg.selectAll("circle")
+                    .data(dataset).enter().append("circle")
+                    .attr("cx", d => scX(xValue))
+                    .attr("cy", d => scY(yValue))
+                    .attr("r", 5)
+                    .attr("fill", "blue");
+                    // d3.extent(data1, d => d.area)
+}
